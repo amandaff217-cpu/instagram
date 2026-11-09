@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SocialLife - Conecte-se</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #fafafa;
+            color: #262626;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid #dbdbdb;
+            padding: 10px 20px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            font-family: 'Brush Script MT', cursive;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 20px;
+            font-size: 24px;
+        }
+
+        .nav-icons span {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .nav-icons span:hover {
+            transform: scale(1.1);
+        }
+
+        /* Main Container */
+        .container {
+            margin-top: 70px;
+            max-width: 935px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 20px;
+        }
+
+        /* Stories */
+        .stories {
+            background: white;
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+        }
+
+        .story {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            min-width: 70px;
+        }
+
+        .story-ring {
+            width: 66px;
+            height: 66px;
+            border-radius: 50%;
+            padding: 3px;
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+        }
+
+        .story-ring.seen {
+            background: #dbdbdb;
+        }
+
+        .story-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid white;
+            object-fit: cover;
+        }
+
+        .story-name {
+            font-size: 12px;
+            margin-top: 5px;
+            max-width: 70px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Post */
+        .post {
+            background: white;
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            padding: 14px;
+            gap: 12px;
+        }
+
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .post-user-info {
+            flex: 1;
+        }
+
+        .post-username {
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .post-location {
+            font-size: 12px;
+            color: #8e8e8e;
+        }
+
+        .post-more {
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .post-image {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .post-actions {
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 24px;
+        }
+
+        .post-actions-left {
+            display: flex;
+            gap: 16px;
+        }
+
+        .post-actions span {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .post-actions span:hover {
+            transform: scale(1.1);
+        }
+
+        .post-actions .liked {
+            color: #ed4956;
+            animation: likeAnimation 0.3s ease;
+        }
+
+        @keyframes likeAnimation {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
+        .post-likes {
+            padding: 0 16px;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .post-caption {
+            padding: 0 16px;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .post-caption .username {
+            font-weight: 600;
+            margin-right: 6px;
+        }
+
+        .post-comments {
+            padding: 0 16px;
+            color: #8e8e8e;
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 8px;
+        }
+
+        .post-time {
+            padding: 0 16px 16px;
+            font-size: 10px;
+            color: #8e8e8e;
+            text-transform: uppercase;
+        }
+
+        .add-comment {
+            border-top: 1px solid #efefef;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .add-comment input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .add-comment button {
+            background: none;
+            border: none;
+            color: #0095f6;
+            font-weight: 600;
+            cursor: pointer;
+            opacity: 0.5;
+        }
+
+        .add-comment button.active {
+            opacity: 1;
+        }
+
+        /* Explore Grid */
+        .explore-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3px;
+        }
+
+        .explore-item {
+            aspect-ratio: 1;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .explore-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .explore-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.3);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            color: white;
+            font-weight: 600;
+        }
+
+        .explore-item:hover .explore-overlay {
+            display: flex;
+        }
+
+        /* Profile */
+        .profile-header {
+            display: flex;
+            gap: 60px;
+            padding: 30px;
+            background: white;
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        .profile-avatar-large {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-top {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .profile-username {
+            font-size: 28px;
+            font-weight: 300;
+        }
+
+        .profile-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #0095f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0083e0;
+        }
+
+        .btn-secondary {
+            background: #efefef;
+            color: #262626;
+        }
+
+        .btn-secondary:hover {
+            background: #dbdbdb;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 20px;
+        }
+
+        .profile-stat {
+            font-size: 16px;
+        }
+
+        .profile-stat strong {
+            font-weight: 600;
+        }
+
+        .profile-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .profile-bio {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .profile-bio .link {
+            color: #00376b;
+            text-decoration: none;
+        }
+
+        /* Chat */
+        .chat-container {
+            display: none;
+            position: fixed;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 350px;
+            background: white;
+            border-left: 1px solid #dbdbdb;
+            z-index: 2000;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 20px;
+            border-bottom: 1px solid #dbdbdb;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.4;
+            animation: messageSlide 0.3s ease;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.received {
+            background: #efefef;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.sent {
+            background: #0095f6;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-image {
+            max-width: 100%;
+            border-radius: 12px;
+            margin-top: 8px;
+        }
+
+        .chat-input-container {
+            padding: 16px;
+            border-top: 1px solid #dbdbdb;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            border: 1px solid #dbdbdb;
+            border-radius: 18px;
+            padding: 8px 16px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .chat-send {
+            background: #0095f6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .chat-send:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Relationship Level */
+        .relationship-bar {
+            background: linear-gradient(90deg, #ed4956, #ff6b6b);
+            height: 4px;
+            border-radius: 2px;
+            margin-top: 8px;
+            transition: width 0.5s ease;
+        }
+
+        .relationship-label {
+            font-size: 12px;
+            color: #8e8e8e;
+            margin-top: 4px;
+        }
+
+        /* Suggested Users */
+        .suggested-section {
+            background: white;
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+
+        .suggested-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .suggested-title {
+            color: #8e8e8e;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .suggested-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .suggested-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .suggested-info {
+            flex: 1;
+        }
+
+        .suggested-username {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .suggested-subtitle {
+            font-size: 12px;
+            color: #8e8e8e;
+        }
+
+        .follow-btn-small {
+            background: none;
+            border: none;
+            color: #0095f6;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .follow-btn-small.following {
+            color: #262626;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #dbdbdb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .close-modal {
+            font-size: 28px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        /* Typing indicator */
+        .typing {
+            display: flex;
+            gap: 4px;
+            padding: 12px 16px;
+            background: #efefef;
+            border-radius: 18px;
+            align-self: flex-start;
+            width: fit-content;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #8e8e8e;
+            border-radius: 50%;
+            animation: typingBounce 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-10px); }
+        }
+
+        /* Fame meter */
+        .fame-meter {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .fame-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .fame-bar {
+            width: 200px;
+            height: 8px;
+            background: #efefef;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .fame-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #f09433, #ed4956);
+            transition: width 0.5s ease;
+        }
+
+        .fame-level {
+            font-size: 12px;
+            color: #8e8e8e;
+            margin-top: 4px;
+        }
+
+        /* Responsive */
+        @media (max-width: 735px) {
+            .profile-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .profile-stats {
+                justify-content: center;
+            }
+
+            .chat-container {
+                width: 100%;
+            }
+
+            .explore-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Heart animation */
+        .heart-animation {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 100px;
+            color: white;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .heart-animation.animate {
+            animation: heartPop 0.8s ease;
+        }
+
+        @keyframes heartPop {
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(0); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">SocialLife</div>
+        <div class="nav-icons">
+            <span onclick="showFeed()">🏠</span>
+            <span onclick="showExplore()">🔍</span>
+            <span onclick="toggleChat()">💬</span>
+            <span onclick="showProfile()">👤</span>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container" id="mainContainer">
+        <!-- Content will be loaded here -->
+    </div>
+
+    <!-- Chat Container -->
+    <div class="chat-container" id="chatContainer">
+        <div class="chat-header">
+            <img src="" alt="" class="post-avatar" id="chatAvatar">
+            <div>
+                <div style="font-weight: 600;" id="chatUsername"></div>
+                <div class="relationship-label" id="chatRelationship"></div>
+                <div class="relationship-bar" id="chatRelationshipBar" style="width: 0%"></div>
+            </div>
+            <span onclick="toggleChat()" style="margin-left: auto; cursor: pointer;">✕</span>
+        </div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input-container">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Mensagem..." onkeypress="handleChatKeypress(event)">
+            <button class="chat-send" id="chatSend" onclick="sendMessage()" disabled>Enviar</button>
+        </div>
+    </div>
+
+    <!-- Fame Meter -->
+    <div class="fame-meter">
+        <div class="fame-title">⭐ Sua Fama</div>
+        <div class="fame-bar">
+            <div class="fame-progress" id="fameProgress" style="width: 0%"></div>
+        </div>
+        <div class="fame-level" id="fameLevel">Iniciante - 0 seguidores</div>
+    </div>
+
+    <!-- Modal for Comments -->
+    <div class="modal" id="commentsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Comentários</h3>
+                <button class="close-modal" onclick="closeModal()">✕</button>
+            </div>
+            <div class="modal-body" id="modalCommentsBody"></div>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        const gameState = {
+            currentUser: {
+                username: 'voce_oficial',
+                name: 'Você',
+                followers: 0,
+                following: 0,
+                fame: 0,
+                fameLevel: 1
+            },
+            currentChat: null,
+            currentView: 'feed',
+            posts: [],
+            users: [],
+            messages: {},
+            relationships: {}
+        };
+
+        // Personalities and conversation patterns
+        const personalities = {
+            romantic: {
+                greetings: ['Oi! Tudo bem? 😊', 'Olá! Que bom te ver por aqui!', 'Ei, como você está?'],
+                questions: ['O que você gosta de fazer no tempo livre?', 'Qual seu lugar favorito?', 'Me conta mais sobre você!'],
+                compliments: ['Você é incrível!', 'Adorei conversar com você! 💕', 'Você me faz sorrir!'],
+                photos: ['https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400', 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400'],
+                romantic: ['Estou gostando muito de você...', 'Você é especial para mim 💖', 'Quero te conhecer melhor...']
+            },
+            fitness: {
+                greetings: ['E aí! Pronto para treinar? 💪', 'Olá! Já malhou hoje?', 'Hey! Bora ficar fit?'],
+                questions: ['Qual seu exercício favorito?', 'Você treina em casa ou na academia?', 'Qual sua meta fitness?'],
+                compliments: ['Você tem determinação!', 'Continu assim que vai longe! 💪', 'Orgulho de você!'],
+                photos: ['https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=400', 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400'],
+                motivational: ['Nunca desista dos seus sonhos!', 'Foco e força sempre! 🔥', 'Você consegue!']
+            },
+            artistic: {
+                greetings: ['Olá, alma criativa! 🎨', 'Oi! Inspirado hoje?', 'Hey! Vamos criar algo juntos?'],
+                questions: ['Que tipo de arte você gosta?', 'Você cria algo também?', 'Qual sua fonte de inspiração?'],
+                compliments: ['Você tem uma energia única!', 'Adorei sua perspectiva! ', 'Você é inspirador!'],
+                photos: ['https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400', 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400'],
+                deep: ['A arte está em tudo ao nosso redor...', 'A vida é uma obra de arte 🎭', 'Você me inspira a criar...']
+            },
+            professional: {
+                greetings: ['Olá! Como vão os negócios? ', 'Oi! Trabalhando muito?', 'Hey! Sucesso hoje?'],
+                questions: ['Em que você trabalha?', 'Qual seu projeto atual?', 'Quais suas metas profissionais?'],
+                compliments: ['Você é muito dedicado!', 'Admiro sua ambição! ', 'Você vai longe!'],
+                photos: ['https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400', 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400'],
+                business: ['O sucesso vem para quem trabalha!', 'Sempre em busca do topo! 🚀', 'Vamos fazer acontecer!']
+            }
+        };
+
+        // Generate users with Asian males focus
+        function generateUsers() {
+            const firstNames = ['Kenji', 'Hiro', 'Min-jun', 'Takeshi', 'Wei', 'Jin', 'Ryu', 'Daiki', 'Jun', 'Haruto', 'Yuki', 'Sato', 'Chen', 'Park', 'Kim', 'Tanaka', 'Lee', 'Wang', 'Nakamura', 'Suzuki'];
+            const lastNames = ['Tanaka', 'Sato', 'Suzuki', 'Kim', 'Park', 'Lee', 'Wang', 'Chen', 'Nakamura', 'Yamamoto', 'Watanabe', 'Ito', 'Nakajima', 'Kato', 'Yoshida'];
+            const occupations = ['Modelo', 'Empresário', 'Personal Trainer', 'Fotógrafo', 'Chef', 'Arquiteto', 'Músico', 'Ator', 'Designer', 'Empreendedor'];
+            
+            const userImages = [
+                'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400',
+                'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
+                'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400',
+                'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400',
+                'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400',
+                'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=400',
+                'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400',
+                'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400'
+            ];
+
+            const bodyImages = [
+                'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=600',
+                'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600',
+                'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600'
+            ];
+
+            const personalitiesList = ['romantic', 'fitness', 'artistic', 'professional'];
+
+            for (let i = 0; i < 30; i++) {
+                const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+                const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+                const username = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${Math.floor(Math.random() * 999)}`;
+                const age = Math.floor(Math.random() * (35 - 21 + 1)) + 21;
+                const personality = personalitiesList[Math.floor(Math.random() * personalitiesList.length)];
+                const followers = Math.floor(Math.random() * 50000) + 1000;
+                const following = Math.floor(Math.random() * 1000) + 100;
+                
+                const user = {
+                    id: i,
+                    username: username,
+                    name: `${firstName} ${lastName}`,
+                    age: age,
+                    occupation: occupations[Math.floor(Math.random() * occupations.length)],
+                    avatar: userImages[Math.floor(Math.random() * userImages.length)],
+                    bodyPhoto: bodyImages[Math.floor(Math.random() * bodyImages.length)],
+                    personality: personality,
+                    followers: followers,
+                    following: following,
+                    posts: Math.floor(Math.random() * 200) + 20,
+                    bio: `${age} anos • ${occupations[Math.floor(Math.random() * occupations.length)]}\n📍 Tóquio/Seul/Shanghai\n✨ Vivendo a vida ao máximo`,
+                    isFollowing: false,
+                    relationshipLevel: 0, // 0-100
+                    lastMessage: null,
+                    online: Math.random() > 0.5
+                };
+
+                gameState.users.push(user);
+                gameState.relationships[user.id] = { level: 0, stage: 'stranger', messages: [] };
+            }
+        }
+
+        // Generate posts
+        function generatePosts() {
+            const captions = [
+                'Dia perfeito! ☀️ #lifestyle #blessed',
+                'Treino concluído! 💪 #fitness #motivation',
+                'Novo projeto no ar!  #work #success',
+                'Momentos especiais ✨ #life #happy',
+                'Foco nos objetivos! 📈 #goals #hustle',
+                'Arte é vida 🎨 #art #creative',
+                'Explorando novos lugares 🌏 #travel #adventure',
+                'Gratidão sempre 🙏 #thankful #blessed'
+            ];
+
+            for (let i = 0; i < 20; i++) {
+                const user = gameState.users[Math.floor(Math.random() * gameState.users.length)];
+                const post = {
+                    id: i,
+                    userId: user.id,
+                    image: user.bodyPhoto,
+                    caption: captions[Math.floor(Math.random() * captions.length)],
+                    likes: Math.floor(Math.random() * 5000) + 100,
+                    comments: Math.floor(Math.random() * 200) + 10,
+                    time: `${Math.floor(Math.random() * 23) + 1}h`,
+                    isLiked: false,
+                    comments_list: generateComments(user)
+                };
+                gameState.posts.push(post);
+            }
+        }
+
+        function generateComments(user) {
+            const comments = [
+                { username: 'maria_silva', text: 'Lindo! ' },
+                { username: 'joao_santos', text: 'Incrível!' },
+                { username: 'ana_costa', text: 'Arrasou! ' },
+                { username: 'pedro_oliveira', text: 'Top demais!' },
+                { username: 'julia_ferreira', text: 'Que foto linda!' }
+            ];
+            return comments.sort(() => 0.5 - Math.random()).slice(0, Math.floor(Math.random() * 3) + 1);
+        }
+
+        // Initialize game
+        function initGame() {
+            generateUsers();
+            generatePosts();
+            showFeed();
+            updateFameMeter();
+        }
+
+        // Show Feed
+        function showFeed() {
+            gameState.currentView = 'feed';
+            const container = document.getElementById('mainContainer');
+            
+            // Stories
+            let storiesHTML = '<div class="stories">';
+            storiesHTML += `
+                <div class="story" onclick="addStory()">
+                    <div class="story-ring">
+                        <img src="https://via.placeholder.com/60" class="story-img" alt="Seu story">
+                    </div>
+                    <span class="story-name">Seu story</span>
+                </div>
+            `;
+            
+            gameState.users.slice(0, 10).forEach(user => {
+                storiesHTML += `
+                    <div class="story" onclick="viewStory('${user.username}')">
+                        <div class="story-ring">
+                            <img src="${user.avatar}" class="story-img" alt="${user.username}">
+                        </div>
+                        <span class="story-name">${user.username}</span>
+                    </div>
+                `;
+            });
+            storiesHTML += '</div>';
+
+            // Posts
+            let postsHTML = '';
+            gameState.posts.forEach(post => {
+                const user = gameState.users.find(u => u.id === post.userId);
+                postsHTML += createPostHTML(post, user);
+            });
+
+            // Suggested users
+            let suggestedHTML = '<div class="suggested-section">';
+            suggestedHTML += '<div class="suggested-header"><span class="suggested-title">Sugestões para você</span><span style="font-size:12px;cursor:pointer">Ver tudo</span></div>';
+            
+            gameState.users.slice(0, 5).forEach(user => {
+                suggestedHTML += `
+                    <div class="suggested-user">
+                        <img src="${user.avatar}" class="suggested-avatar" alt="${user.username}">
+                        <div class="suggested-info">
+                            <div class="suggested-username" onclick="openUserProfile(${user.id})">${user.username}</div>
+                            <div class="suggested-subtitle">Seguido(a) por ${gameState.users[Math.floor(Math.random() * gameState.users.length)].username} + ${Math.floor(Math.random() * 5)}</div>
+                        </div>
+                        <button class="follow-btn-small ${user.isFollowing ? 'following' : ''}" onclick="toggleFollow(${user.id})">
+                            ${user.isFollowing ? 'Seguindo' : 'Seguir'}
+                        </button>
+                    </div>
+                `;
+            });
+            suggestedHTML += '</div>';
+
+            container.innerHTML = storiesHTML + postsHTML + suggestedHTML;
+        }
+
+        function createPostHTML(post, user) {
+            return `
+                <article class="post">
+                    <div class="post-header">
+                        <img src="${user.avatar}" class="post-avatar" alt="${user.username}" onclick="openUserProfile(${user.id})">
+                        <div class="post-user-info">
+                            <div class="post-username" onclick="openUserProfile(${user.id})">${user.username}</div>
+                            <div class="post-location">📍 Localização</div>
+                        </div>
+                        <span class="post-more">⋯</span>
+                    </div>
+                    <div style="position:relative" ondblclick="likePost(${post.id})">
+                        <img src="${post.image}" class="post-image" alt="Post">
+                        <div class="heart-animation" id="heart-${post.id}">❤️</div>
+                    </div>
+                    <div class="post-actions">
+                        <div class="post-actions-left">
+                            <span onclick="likePost(${post.id})" id="like-${post.id}" class="${post.isLiked ? 'liked' : ''}">
+                                ${post.isLiked ? '❤️' : '🤍'}
+                            </span>
+                            <span onclick="openComments(${post.id})">💬</span>
+                            <span>️</span>
+                        </div>
+                        <span>🔖</span>
+                    </div>
+                    <div class="post-likes">${post.likes.toLocaleString()} curtidas</div>
+                    <div class="post-caption">
+                        <span class="username">${user.username}</span>
+                        ${post.caption}
+                    </div>
+                    <div class="post-comments" onclick="openComments(${post.id})">
+                        Ver todos os ${post.comments} comentários
+                    </div>
+                    ${post.comments_list.map(c => `
+                        <div class="post-caption" style="margin-bottom:4px">
+                            <span class="username">${c.username}</span>
+                            ${c.text}
+                        </div>
+                    `).join('')}
+                    <div class="post-time">${post.time} HORAS</div>
+                    <div class="add-comment">
+                        <input type="text" placeholder="Adicione um comentário..." onchange="addComment(${post.id}, this.value)">
+                        <button>Publicar</button>
+                    </div>
+                </article>
+            `;
+        }
+
+        // Show Explore
+        function showExplore() {
+            gameState.currentView = 'explore';
+            const container = document.getElementById('mainContainer');
+            
+            let gridHTML = '<div class="explore-grid">';
+            gameState.users.forEach((user, index) => {
+                gridHTML += `
+                    <div class="explore-item" onclick="openUserProfile(${user.id})">
+                        <img src="${user.bodyPhoto || user.avatar}" alt="${user.username}">
+                        <div class="explore-overlay">
+                            <span>❤️ ${user.followers.toLocaleString()}</span>
+                            <span> ${user.posts}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            gridHTML += '</div>';
+            
+            container.innerHTML = gridHTML;
+        }
+
+        // Show Profile
+        function showProfile(userId = null) {
+            const user = userId ? gameState.users.find(u => u.id === userId) : gameState.currentUser;
+            const container = document.getElementById('mainContainer');
+            
+            if (!userId) {
+                // Your profile
+                container.innerHTML = `
+                    <div class="profile-header">
+                        <img src="https://via.placeholder.com/150" class="profile-avatar-large" alt="Seu perfil">
+                        <div class="profile-info">
+                            <div class="profile-top">
+                                <h1 class="profile-username">${user.username}</h1>
+                                <div class="profile-buttons">
+                                    <button class="btn btn-secondary">Editar perfil</button>
+                                    <button class="btn btn-secondary">Ver arquivados</button>
+                                </div>
+                            </div>
+                            <div class="profile-stats">
+                                <div class="profile-stat"><strong>${user.posts}</strong> publicações</div>
+                                <div class="profile-stat"><strong>${user.followers}</strong> seguidores</div>
+                                <div class="profile-stat"><strong>${user.following}</strong> seguindo</div>
+                            </div>
+                            <div class="profile-name">${user.name}</div>
+                            <div class="profile-bio">
+                                🌟 Vivendo minha melhor vida<br>
+                                📍 Brasil<br>
+                                 linktr.ee/voce
+                            </div>
+                        </div>
+                    </div>
+                    <div class="explore-grid">
+                        ${gameState.posts.slice(0, 9).map(post => `
+                            <div class="explore-item">
+                                <img src="${post.image}" alt="Post">
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                // Other user profile
+                const isFollowing = user.isFollowing;
+                container.innerHTML = `
+                    <div class="profile-header">
+                        <img src="${user.avatar}" class="profile-avatar-large" alt="${user.username}" onclick="viewBodyPhoto(${user.id})">
+                        <div class="profile-info">
+                            <div class="profile-top">
+                                <h1 class="profile-username">${user.username}</h1>
+                                <div class="profile-buttons">
+                                    <button class="btn ${isFollowing ? 'btn-secondary' : 'btn-primary'}" onclick="toggleFollow(${user.id})">
+                                        ${isFollowing ? 'Seguindo' : 'Seguir'}
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="openChat(${user.id})">Mensagem</button>
+                                    <button class="btn btn-secondary">⋯</button>
+                                </div>
+                            </div>
+                            <div class="profile-stats">
+                                <div class="profile-stat"><strong>${user.posts}</strong> publicações</div>
+                                <div class="profile-stat"><strong>${user.followers.toLocaleString()}</strong> seguidores</div>
+                                <div class="profile-stat"><strong>${user.following}</strong> seguindo</div>
+                            </div>
+                            <div class="profile-name">${user.name} ${user.online ? '🟢' : ''}</div>
+                            <div class="profile-bio">
+                                ${user.bio}<br>
+                                ${user.occupation}
+                            </div>
+                            ${user.isFollowing ? `
+                                <div class="relationship-label">Nível de relacionamento</div>
+                                <div class="relationship-bar" id="profileRelBar" style="width: ${gameState.relationships[user.id].level}%"></div>
+                            ` : ''}
+                        </div>
+                    </div>
+                    <div class="explore-grid">
+                        ${Array(9).fill(user.bodyPhoto).map((img, i) => `
+                            <div class="explore-item">
+                                <img src="${img}" alt="Post ${i+1}">
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+        }
+
+        // Chat System
+        function openChat(userId) {
+            const user = gameState.users.find(u => u.id === userId);
+            gameState.currentChat = user;
+            
+            document.getElementById('chatAvatar').src = user.avatar;
+            document.getElementById('chatUsername').textContent = user.username;
+            document.getElementById('chatRelationship').textContent = `Nível ${Math.floor(gameState.relationships[user.id].level / 10) + 1}`;
+            document.getElementById('chatRelationshipBar').style.width = `${gameState.relationships[user.id].level}%`;
+            
+            document.getElementById('chatContainer').style.display = 'flex';
+            loadMessages(userId);
+        }
+
+        function toggleChat() {
+            const chat = document.getElementById('chatContainer');
+            chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function loadMessages(userId) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messages = gameState.relationships[userId].messages || [];
+            
+            if (messages.length === 0) {
+                // Initial message based on personality
+                const personality = personalities[gameState.users.find(u => u.id === userId).personality];
+                const greeting = personality.greetings[Math.floor(Math.random() * personality.greetings.length)];
+                
+                setTimeout(() => {
+                    addMessage(userId, greeting, 'received');
+                }, 1000);
+            } else {
+                messagesDiv.innerHTML = messages.map(msg => `
+                    <div class="message ${msg.type}">
+                        ${msg.text}
+                        ${msg.image ? `<img src="${msg.image}" class="message-image">` : ''}
+                    </div>
+                `).join('');
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }
+        }
+
+        function handleChatKeypress(event) {
+            document.getElementById('chatSend').disabled = event.target.value.trim() === '';
+            if (event.key === 'Enter') sendMessage();
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            const userId = gameState.currentChat.id;
+            
+            if (text && gameState.currentChat) {
+                addMessage(userId, text, 'sent');
+                input.value = '';
+                document.getElementById('chatSend').disabled = true;
+                
+                // Increase relationship
+                gameState.relationships[userId].level = Math.min(100, gameState.relationships[userId].level + 5);
+                updateRelationshipBar();
+                
+                // Simulate response
+                simulateResponse(userId);
+            }
+        }
+
+        function addMessage(userId, text, type, image = null) {
+            if (!gameState.relationships[userId].messages) {
+                gameState.relationships[userId].messages = [];
+            }
+            
+            gameState.relationships[userId].messages.push({ text, type, image, time: new Date() });
+            
+            const messagesDiv = document.getElementById('chatMessages');
+            const msgHTML = `
+                <div class="message ${type}">
+                    ${text}
+                    ${image ? `<img src="${image}" class="message-image">` : ''}
+                </div>
+            `;
+            messagesDiv.insertAdjacentHTML('beforeend', msgHTML);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function simulateResponse(userId) {
+            const user = gameState.users.find(u => u.id === userId);
+            const personality = personalities[user.personality];
+            const relLevel = gameState.relationships[userId].level;
+            
+            // Show typing indicator
+            const messagesDiv = document.getElementById('chatMessages');
+            const typingHTML = `
+                <div class="typing" id="typing-${userId}">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            `;
+            messagesDiv.insertAdjacentHTML('beforeend', typingHTML);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            
+            // Delay based on relationship level (higher = faster)
+            const delay = Math.max(2000, 5000 - (relLevel * 30));
+            
+            setTimeout(() => {
+                document.getElementById(`typing-${userId}`)?.remove();
+                
+                let response;
+                let sendPhoto = false;
+                
+                // Choose response based on relationship level
+                if (relLevel < 20) {
+                    response = personality.greetings[Math.floor(Math.random() * personality.greetings.length)];
+                } else if (relLevel < 40) {
+                    response = personality.questions[Math.floor(Math.random() * personality.questions.length)];
+                } else if (relLevel < 60) {
+                    response = personality.compliments[Math.floor(Math.random() * personality.compliments.length)];
+                    sendPhoto = Math.random() > 0.7;
+                } else if (relLevel < 80) {
+                    response = personality.romantic ? personality.romantic[Math.floor(Math.random() * personality.romantic.length)] : personality.compliments[Math.floor(Math.random() * personality.compliments.length)];
+                    sendPhoto = Math.random() > 0.5;
+                } else {
+                    response = personality.romantic ? personality.romantic[Math.floor(Math.random() * personality.romantic.length)] : 'Você é muito especial para mim! 💕';
+                    sendPhoto = Math.random() > 0.4;
+                }
+                
+                if (sendPhoto && relLevel >= 30) {
+                    const photo = personality.photos[Math.floor(Math.random() * personality.photos.length)];
+                    addMessage(userId, response, 'received', photo);
+                } else {
+                    addMessage(userId, response, 'received');
+                }
+                
+                // Increase relationship slightly
+                gameState.relationships[userId].level = Math.min(100, gameState.relationships[userId].level + 2);
+                updateRelationshipBar();
+                
+            }, delay);
+        }
+
+        function updateRelationshipBar() {
+            if (gameState.currentChat) {
+                const level = gameState.relationships[gameState.currentChat.id].level;
+                document.getElementById('chatRelationshipBar').style.width = `${level}%`;
+                document.getElementById('chatRelationship').textContent = `Nível ${Math.floor(level / 10) + 1}`;
+            }
+        }
+
+        // Follow/Unfollow
+        function toggleFollow(userId) {
+            const user = gameState.users.find(u => u.id === userId);
+            user.isFollowing = !user.isFollowing;
+            
+            if (user.isFollowing) {
+                user.followers++;
+                gameState.currentUser.following++;
+                gameState.currentUser.fame += 10;
+                
+                // Start relationship
+                gameState.relationships[userId].level = 5;
+                
+                // Send welcome message
+                setTimeout(() => {
+                    if (gameState.currentChat && gameState.currentChat.id === userId) {
+                        const personality = personalities[user.personality];
+                        addMessage(userId, personality.greetings[0], 'received');
+                    }
+                }, 1000);
+            } else {
+                user.followers--;
+                gameState.currentUser.following--;
+                gameState.relationships[userId].level = 0;
+            }
+            
+            updateFameMeter();
+            
+            // Refresh current view
+            if (gameState.currentView === 'feed') showFeed();
+            else if (gameState.currentView === 'explore') showExplore();
+            else showProfile(userId);
+        }
+
+        // Like post
+        function likePost(postId) {
+            const post = gameState.posts.find(p => p.id === postId);
+            const likeBtn = document.getElementById(`like-${postId}`);
+            
+            if (!post.isLiked) {
+                post.isLiked = true;
+                post.likes++;
+                likeBtn.textContent = '❤️';
+                likeBtn.classList.add('liked');
+                
+                // Animation
+                const heart = document.getElementById(`heart-${postId}`);
+                heart.classList.add('animate');
+                setTimeout(() => heart.classList.remove('animate'), 800);
+                
+                // Fame increase
+                gameState.currentUser.fame += 5;
+                updateFameMeter();
+            }
+        }
+
+        // Comments
+        function openComments(postId) {
+            const post = gameState.posts.find(p => p.id === postId);
+            const modal = document.getElementById('commentsModal');
+            const body = document.getElementById('modalCommentsBody');
+            
+            let html = `
+                <div style="display:flex;gap:12px;margin-bottom:20px">
+                    <img src="${gameState.users.find(u => u.id === post.userId).avatar}" style="width:40px;height:40px;border-radius:50%">
+                    <div>
+                        <strong>${gameState.users.find(u => u.id === post.userId).username}</strong>
+                        <p>${post.caption}</p>
+                    </div>
+                </div>
+                <div style="border-top:1px solid #dbdbdb;padding-top:20px">
+            `;
+            
+            post.comments_list.forEach(comment => {
+                html += `
+                    <div style="display:flex;gap:12px;margin-bottom:16px">
+                        <div style="width:32px;height:32px;border-radius:50%;background:#dbdbdb"></div>
+                        <div>
+                            <strong>${comment.username}</strong>
+                            <p>${comment.text}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `
+                </div>
+                <div style="border-top:1px solid #dbdbdb;margin-top:20px;padding-top:16px;display:flex;gap:12px">
+                    <img src="https://via.placeholder.com/32" style="width:32px;height:32px;border-radius:50%">
+                    <input type="text" placeholder="Adicione um comentário..." style="flex:1;border:none;outline:none" onchange="addCommentToPost(${postId}, this.value)">
+                </div>
+            `;
+            
+            body.innerHTML = html;
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('commentsModal').classList.remove('active');
+        }
+
+        function addComment(postId, text) {
+            if (text.trim()) {
+                const post = gameState.posts.find(p => p.id === postId);
+                post.comments_list.push({ username: gameState.currentUser.username, text: text });
+                post.comments++;
+                showFeed();
+            }
+        }
+
+        function addCommentToPost(postId, text) {
+            if (text.trim()) {
+                const post = gameState.posts.find(p => p.id === postId);
+                post.comments_list.push({ username: gameState.currentUser.username, text: text });
+                post.comments++;
+                openComments(postId);
+            }
+        }
+
+        // Fame meter
+        function updateFameMeter() {
+            const fame = gameState.currentUser.fame;
+            const followers = gameState.currentUser.followers;
+            const progress = Math.min(100, (fame / 1000) * 100);
+            
+            document.getElementById('fameProgress').style.width = `${progress}%`;
+            
+            let level = 'Iniciante';
+            if (fame > 100) level = 'Popular';
+            if (fame > 500) level = 'Influencer';
+            if (fame > 1000) level = 'Celebridade';
+            if (fame > 5000) level = 'Superstar';
+            
+            document.getElementById('fameLevel').textContent = `${level} - ${followers} seguidores`;
+        }
+
+        // View story
+        function viewStory(username) {
+            alert(`Visualizando story de ${username}`);
+        }
+
+        // Add story
+        function addStory() {
+            alert('Adicionar novo story!');
+        }
+
+        // View body photo
+        function viewBodyPhoto(userId) {
+            const user = gameState.users.find(u => u.id === userId);
+            const modal = document.getElementById('commentsModal');
+            const body = document.getElementById('modalCommentsBody');
+            
+            body.innerHTML = `
+                <img src="${user.bodyPhoto}" style="width:100%;border-radius:8px">
+                <div style="margin-top:20px;text-align:center">
+                    <h3>${user.name}</h3>
+                    <p>${user.occupation} • ${user.age} anos</p>
+                </div>
+            `;
+            modal.classList.add('active');
+        }
+
+        // Open user profile from anywhere
+        function openUserProfile(userId) {
+            showProfile(userId);
+        }
+
+        // Close modal on outside click
+        document.getElementById('commentsModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // Initialize
+        window.onload = initGame;
+    </script>
+</body>
+</html>
